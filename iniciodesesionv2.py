@@ -59,6 +59,42 @@ class turistasventana(QWidget):
         layer.addWidget(self.label2)
         self.setLayout(layer)
 
+class Selection(QDialog):
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.setWindowTitle("Selecciona el tipo de senderismo que realizarás")
+
+        layout = QVBoxLayout()
+
+        self.label = QLabel("Selecciona el senderismo a realizar:", self)
+        layout.addWidget(self.label)
+
+        self.btn_light = QPushButton("Senderismo light", self)
+        self.btn_light.clicked.connect(self.selection_light)
+        layout.addWidget(self.btn_light)
+
+        self.btn_plus = QPushButton("Senderismo plus", self)
+        self.btn_plus.clicked.connect(self.selection_plus)
+        layout.addWidget(self.btn_plus)
+
+        self.btn_heavy = QPushButton("Senderismo heavy", self)
+        self.btn_heavy.clicked.connect(self.selection_heavy)
+        layout.addWidget(self.btn_heavy)
+
+        self.setLayout(layout)
+
+    def selection_light(self):
+        self.accepted_type = "senderismo light"
+        self.accept()
+
+    def selection_plus(self):
+        self.accepted_type = "senderismo plus"
+        self.accept()
+
+    def selection_heavy(self):
+        self.accepted_type = "senderismo heavy"
+        self.accept()
+
 class Miniwindow(QDialog):
     def __init__(self):
         super().__init__()
@@ -97,9 +133,11 @@ class Miniwindow(QDialog):
             print("Inicio de sesión exitoso")
             self.close()
             availability = randint(2, 5)
-            excursion_type = ("heavy")
-            self.other_window = guiasventana(availability, excursion_type)
-            self.other_window.show()
+            excursion_type_dialog = Selection()
+            if excursion_type_dialog.exec() == QDialog.DialogCode.Accepted:
+                excursion_type = excursion_type_dialog.accepted_type
+                self.other_window = guiasventana(availability, excursion_type)
+                self.other_window.show()
 
         elif username == "logistica" and password == "materiales":
             print("Inicio de sesión exitoso")
